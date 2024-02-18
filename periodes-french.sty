@@ -1,0 +1,154 @@
+% Identification___
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{periodes-french}[2024/02/18 Paquet pour les commandes siecle et autres en français]
+
+% Required packages___
+\RequirePackage{xspace}
+\RequirePackage{xpunctuate}
+\RequirePackage{relsize}
+\RequirePackage{ifthen}
+\RequirePackage[mode=match,locale=FR]{siunitx}
+
+% Internal commands___
+
+%% Crée le numéro du siècle
+\providecommand{\NumeroDuSiecle}[1]{%
+	\ifthenelse{#1=1}{%
+		\textsc{\romannumeral#1\relax}\textsuperscript{er}%
+	}{%
+		\textsc{\romannumeral#1\relax}\textsuperscript{e}%
+	}%
+}
+
+%% For creating roman numerals in capital letters
+\providecommand{\RomanNumeralCaps}[1]{\MakeUppercase{\romannumeral #1}}
+
+%% Crée le numéro du millénaire
+\providecommand{\NumeroDuMillenaire}[1]{%
+	\ifthenelse{#1=1}{%
+		\RomanNumeralCaps{#1}\textsuperscript{er}%
+	}{%
+		\RomanNumeralCaps{#1}\textsuperscript{e}%
+	}%
+}
+
+% User commands___
+
+%% Siècles
+
+%%% siecle : Siècle
+\providecommand{\siecle}[1]{\NumeroDuSiecle{#1}~siècle\xspace}
+
+%%% sieclesans : Numéro du siècle sans siècle derrière
+\providecommand{\sieclesans}[1]{\NumeroDuSiecle{#1}\xspace}
+
+%%% intersiecle : Intervalle entre siècles au singulier
+\providecommand{\intersiecle}[2]{\NumeroDuSiecle{#1}-\NumeroDuSiecle{#2}~siècle\xspace}
+
+%%% intersiecles : Intervalle entre siècles au plurial
+\providecommand{\intersiecles}[2]{\NumeroDuSiecle{#1}-\NumeroDuSiecle{#2}~siècles\xspace}
+
+%% Millénaires
+
+%%% millenaire : Millénaire
+\providecommand{\millenaire}[1]{\NumeroDuMillenaire{#1}~millénaire\xspace}
+
+%%% millenairesans : Numéro du millénaire sans millénaire derrière
+\providecommand{\millenairesans}[1]{\NumeroDuMillenaire{#1}\xspace}
+
+%%% intermillenaire : Intervalle entre millénaires au singulier
+\providecommand{\intermillenaire}[2]{\NumeroDuMillenaire{#1}-\NumeroDuMillenaire{#2}~millénaire\xspace}
+
+%%% intermillenaires : Intervalle entre millénaires au pluriel
+
+\providecommand{\intermillenaires}[2]{\NumeroDuMillenaire{#1}-\NumeroDuMillenaire{#2}~millénaires\xspace}
+
+%% Avant et après J.-C.
+
+%%% Av. J.-C.
+\providecommand{\BC}[0]{av.~\hbox{J.-C}\xperiod}
+
+%%% Apr. J.-C.
+\providecommand{\AD}[0]{apr.~\hbox{J.-C}\xperiod}
+
+%% Ordinaux
+
+%%% En chiffres arabes
+\providecommand{\ord}[1]{%
+	\ifthenelse{#1=1}{%
+		\num{#1}\textsuperscript{er}\xspace%
+	}{%
+		\num{#1}\textsuperscript{e}\xspace%
+	}%
+}
+
+%%% En chiffres romains
+\providecommand{\ordrom}[1]{%
+	\ifthenelse{#1=1}{%
+		\RomanNumeralCaps{#1}\textsuperscript{er}\xspace%
+	}{%
+		\RomanNumeralCaps{#1}\textsuperscript{e}\xspace%
+	}%
+}
+
+%% Numéros
+
+%%% numo : Crée numéro, avec le o en exposant
+\newcommand{\numo}[1]{n\textsuperscript{o}\,{\num{#1}}}
+
+%%% numos : crée numéros au pluriel, avec le o en exposant
+\newcommand{\numos}[1]{n\textsuperscript{os}\,{#1}}
+
+% Options
+
+%% Ères
+
+%%% av. J.-C.
+\DeclareOption{ere=christ}{%
+	\renewcommand{\BC}[0]{av.~\hbox{J.-C}\xperiod}
+	\renewcommand{\AD}[0]{apr.~\hbox{J.-C}\xperiod}%
+}
+
+\DeclareOption{ere=christdeveloppe}{%
+	\renewcommand{\BC}[0]{avant \hbox{Jésus-Christ}}%
+	\renewcommand{\AD}[0]{avant \hbox{Jésus-Christ}}%
+}
+
+%%% av. n. è.
+\DeclareOption{ere=notre}{%
+	\renewcommand{\BC}[0]{av.~n.~è\xperiod}%
+	\renewcommand{\AD}[0]{de~n.~è\xperiod}%	
+}
+
+\DeclareOption{ere=notredeveloppe}{%
+	\renewcommand{\BC}[0]{avant notre ère}%
+	\renewcommand{\AD}[0]{de notre ère}%	
+}
+
+%%% AEC
+\DeclareOption{ere=commune}{%
+	\renewcommand{\BC}[0]{AEC}%
+	\renewcommand{\AD}[0]{EC}%
+}
+
+\DeclareOption{ere=communedeveloppe}{%
+	\renewcommand{\BC}[0]{avant l'ère commune}%
+	\renewcommand{\AD}[0]{de l'ère commune}%
+}
+
+%% Si la police n'a pas de petites capitales par défaut
+\DeclareOption{nosmallcaps}{%
+	\renewcommand{\NumeroDuSiecle}[1]{%
+		\ifthenelse{#1=1}{%
+			\textsmaller{\RomanNumeralCaps{#1}}\textsuperscript{er}%
+		}{%
+			\textsmaller{\RomanNumeralCaps{#1}}\textsuperscript{e}%
+		}%
+	}%
+}%
+
+\ExecuteOptions{ere=christ}
+
+\ProcessOptions\relax
+
+\endinput
